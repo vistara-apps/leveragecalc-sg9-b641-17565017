@@ -28,7 +28,43 @@ import { Card } from "./components/ui/Card";
 export default function App() {
   const { setFrameReady, isFrameReady, context } = useMiniKit();
   const [frameAdded, setFrameAdded] = useState(false);
-  const [activeTab, setActiveTab] = useState("calculator");
+  
+  // Load saved tab from localStorage or default to "calculator"
+  const [activeTab, setActiveTab] = useState<string>(() => {
+    if (typeof window !== 'undefined') {
+      return localStorage.getItem('leveragecalc_activeTab') || "calculator";
+    }
+    return "calculator";
+  });
+  
+  // Shared state for calculator parameters with localStorage persistence
+  const [entryPrice, setEntryPrice] = useState<number>(() => {
+    if (typeof window !== 'undefined') {
+      return parseFloat(localStorage.getItem('leveragecalc_entryPrice') || '0');
+    }
+    return 0;
+  });
+  
+  const [stopLossPrice, setStopLossPrice] = useState<number>(() => {
+    if (typeof window !== 'undefined') {
+      return parseFloat(localStorage.getItem('leveragecalc_stopLossPrice') || '0');
+    }
+    return 0;
+  });
+  
+  const [accountBalance, setAccountBalance] = useState<number>(() => {
+    if (typeof window !== 'undefined') {
+      return parseFloat(localStorage.getItem('leveragecalc_accountBalance') || '10000');
+    }
+    return 10000;
+  });
+  
+  const [riskPercentage, setRiskPercentage] = useState<number>(() => {
+    if (typeof window !== 'undefined') {
+      return parseFloat(localStorage.getItem('leveragecalc_riskPercentage') || '2');
+    }
+    return 2;
+  });
 
   const addFrame = useAddFrame();
   const openUrl = useOpenUrl();
@@ -39,6 +75,37 @@ export default function App() {
       setFrameReady();
     }
   }, [setFrameReady, isFrameReady]);
+  
+  // Save values to localStorage when they change
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('leveragecalc_activeTab', activeTab);
+    }
+  }, [activeTab]);
+  
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('leveragecalc_entryPrice', entryPrice.toString());
+    }
+  }, [entryPrice]);
+  
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('leveragecalc_stopLossPrice', stopLossPrice.toString());
+    }
+  }, [stopLossPrice]);
+  
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('leveragecalc_accountBalance', accountBalance.toString());
+    }
+  }, [accountBalance]);
+  
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('leveragecalc_riskPercentage', riskPercentage.toString());
+    }
+  }, [riskPercentage]);
 
   const handleAddFrame = useCallback(async () => {
     const frameAdded = await addFrame();
@@ -80,7 +147,7 @@ export default function App() {
 
   return (
     <div className="flex flex-col min-h-screen bg-bg text-text-primary">
-      <div className="w-full max-w-md mx-auto px-4 py-3">
+      <div className="w-full max-w-7xl mx-auto px-4 py-3">
         <header className="flex justify-between items-center mb-6 h-11">
           <div>
             <div className="flex items-center space-x-2">
@@ -112,35 +179,82 @@ export default function App() {
           </p>
         </div>
 
-        <Card className="mb-6">
-          <div className="flex rounded-lg bg-surface p-1">
-            <Button
-              variant={activeTab === "calculator" ? "primary" : "secondary"}
-              size="sm"
-              onClick={() => setActiveTab("calculator")}
-              className="flex-1"
-            >
-              Calculator
-            </Button>
-            <Button
-              variant={activeTab === "ai" ? "primary" : "secondary"}
-              size="sm"
-              onClick={() => setActiveTab("ai")}
-              className="flex-1"
-            >
-              AI Suggestions
-            </Button>
-          </div>
-        </Card>
+        {/* Mobile view (tab-based) */}
+        <div className="md:hidden">
+          <Card className="mb-6">
+            <div className="flex rounded-lg bg-surface p-1">
+              <Button
+                variant={activeTab === "calculator" ? "primary" : "secondary"}
+                size="sm"
+                onClick={() => setActiveTab("calculator")}
+                className="flex-1"
+              >
+                Calculator
+              </Button>
+              <Button
+                variant={activeTab === "ai" ? "primary" : "secondary"}
+                size="sm"
+                onClick={() => setActiveTab("ai")}
+                className="flex-1"
+              >
+                AI Suggestions
+              </Button>
+            </div>
+          </Card>
 
-        <main className="flex-1">
-          {activeTab === "calculator" && (
-            <PositionCalculator sendNotification={handleSendNotification} />
-          )}
-          {activeTab === "ai" && (
-            <AISuggestions sendNotification={handleSendNotification} />
-          )}
-        </main>
+          <main className="flex-1">
+            {activeTab === "calculator" && (
+              <PositionCalculator 
+                sendNotification={handleSendNotification}
+                entryPrice={entryPrice}
+                setEntryPrice={setEntryPrice}
+                stopLossPrice={stopLossPrice}
+                setStopLossPrice={setStopLossPrice}
+                accountBalance={accountBalance}
+                setAccountBalance={setAccountBalance}
+                riskPercentage={riskPercentage}
+                setRiskPercentage={setRiskPercentage}
+              />
+            )}
+            {activeTab === "ai" && (
+              <AISuggestions 
+                sendNotification={handleSendNotification}
+                setEntryPrice={setEntryPrice}
+                setStopLossPrice={setStopLossPrice}
+                setActiveTab={setActiveTab}
+              />
+            )}
+          </main>
+        </div>
+
+        {/* Desktop view (side-by-side) */}
+        <div className="hidden md:block">
+          <div className="grid grid-cols-2 gap-6">
+            <div>
+              <h2 className="text-xl font-semibold mb-4">Position Calculator</h2>
+              <PositionCalculator 
+                sendNotification={handleSendNotification}
+                entryPrice={entryPrice}
+                setEntryPrice={setEntryPrice}
+                stopLossPrice={stopLossPrice}
+                setStopLossPrice={setStopLossPrice}
+                accountBalance={accountBalance}
+                setAccountBalance={setAccountBalance}
+                riskPercentage={riskPercentage}
+                setRiskPercentage={setRiskPercentage}
+              />
+            </div>
+            <div>
+              <h2 className="text-xl font-semibold mb-4">AI Suggestions</h2>
+              <AISuggestions 
+                sendNotification={handleSendNotification}
+                setEntryPrice={setEntryPrice}
+                setStopLossPrice={setStopLossPrice}
+                setActiveTab={setActiveTab}
+              />
+            </div>
+          </div>
+        </div>
 
         <footer className="mt-8 pt-4 flex justify-center">
           <Button
