@@ -10,14 +10,14 @@
     "subtitle": "Built with Zara",
     "description": "LeverageCalc SG9 is a Base Mini App built with Zara.",
     "iconUrl": "https://0co.to/images/zara-2.png",
-    "homeUrl": "https://b641cc5b-7b9b-49d4-9f21-0ae118f81e5e.vistara.dev",
-    "splashImageUrl": "https://dummyimage.com/200x200/0a0b0d/ffffff.png&text=Splash",
+    "homeUrl": "https://b641cc5b7b9b49d49f210ae118f81e5e-rzye-8d483a4l5-vistara.vercel.app",
+    "splashImageUrl": "https://b641cc5b7b9b49d49f210ae118f81e5e-rzye-8d483a4l5-vistara.vercel.app/splash.png",
     "splashBackgroundColor": "#000000",
-    "heroImageUrl": "https://dummyimage.com/1200x628/0a0b0d/ffffff.png&text=Hero",
+    "heroImageUrl": "https://b641cc5b7b9b49d49f210ae118f81e5e-rzye-8d483a4l5-vistara.vercel.app/image.png",
     "tagline": "LeverageCalc SG9",
     "screenshotUrls": [
-      "https://dummyimage.com/1200x628/0a0b0d/ffffff.png&text=Shot1",
-      "https://dummyimage.com/1200x628/0a0b0d/ffffff.png&text=Shot2"
+      "https://b641cc5b7b9b49d49f210ae118f81e5e-rzye-8d483a4l5-vistara.vercel.app/screenshot.png",
+      "https://b641cc5b7b9b49d49f210ae118f81e5e-rzye-8d483a4l5-vistara.vercel.app/screenshot.png"
     ],
     "primaryCategory": "social",
     "tags": [
@@ -25,6 +25,6 @@
       "miniapp",
       "onchainkit"
     ],
-    "webhookUrl": "https://b641cc5b-7b9b-49d4-9f21-0ae118f81e5e.vistara.dev/api/webhook"
+    "webhookUrl": "https://b641cc5b7b9b49d49f210ae118f81e5e-rzye-8d483a4l5-vistara.vercel.app/api/webhook"
   }
 }
